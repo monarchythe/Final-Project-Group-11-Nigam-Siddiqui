@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Dashboard - SMU Theater</title>
+    <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+<div class="container">
+    <h2>🎭 Welcome to SMU Theater Dashboard</h2>
+    <p id="welcome"></p>
+
+    <button onclick="logout()">Logout</button>
+    <hr>
+
+    <div id="events"></div>
+</div>
+
+<script>
+    const baseUrl = "http://localhost:8080";
+
+    document.addEventListener("DOMContentLoaded", loadDashboard);
+
+    async function loadDashboard() {
+        const username = localStorage.getItem("username");
+        if (!username) {
+            alert("Please log in first!");
+            window.location.href = "login.html";
+            return;
+        }
+
+        document.getElementById("welcome").innerText = `Hello, ${username}!`;
+
+        try {
+            const res = await fetch(`${baseUrl}/events`);
+            const events = await res.json();
+
+            // Generate dynamic event cards
+            const html = events.map(ev => `
+      <div style="border:1px solid #ccc; padding:15px; margin:10px; border-radius:8px;">
+        <h3>${ev.title}</h3>
+        <p><strong>Genre:</strong> ${ev.genre}</p>
+        <p><strong>Duration:</strong> ${ev.duration} mins</p>
+        <p><strong>Showtime:</strong> ${ev.dateTime}</p>
+        <p><strong>Available Seats:</strong> ${ev.seatsAvailable}</p>
+        <button onclick="bookEvent('${ev.id}')">Book Ticket</button>
+      </div>
+    `).join("");
+
+            document.getElementById("events").innerHTML = html;
+
+        } catch (err) {
+            console.error(err);
+            alert("Failed to load events. Make sure Event Service is running.");
+        }
+    }
+
+    // Save selected event ID and go to seat selection
+    function bookEvent(eventId) {
+        localStorage.setItem("eventId", eventId);
+        window.location.href = "seat-selection.html";
+    }
+
+    // Logout function
+    function logout() {
+        localStorage.clear();
+        alert("Logged out successfully!");
+        window.location.href = "login.html";
+    }
+</script>
+</body>
+</html>

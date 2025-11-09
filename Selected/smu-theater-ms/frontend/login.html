@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Login / Register - SMU Theater</title>
+    <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+<div class="container">
+    <h2>🎬 SMU Theater Login</h2>
+    <input id="username" placeholder="Username" /><br>
+    <input id="password" type="password" placeholder="Password" /><br>
+    <button type="button" onclick="loginUser()">Login</button>
+    <button type="button" onclick="registerUser()">Register</button>
+</div>
+
+<script>
+    const baseUrl = "http://localhost:8080"; // Gateway endpoint
+
+    // ✅ Register new user
+    async function registerUser() {
+        const username = document.getElementById("username").value.trim();
+        const password = document.getElementById("password").value.trim();
+
+        if (!username || !password) {
+            alert("Please enter both username and password");
+            return;
+        }
+
+        const res = await fetch(`${baseUrl}/auth/register`, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ username, password })
+        });
+
+        const data = await res.json();
+        if (res.ok) {
+            alert(data.message || "Registered successfully!");
+        } else {
+            alert("Error: " + (data.error || JSON.stringify(data)));
+        }
+    }
+
+    // ✅ Login existing user
+    async function loginUser() {
+        const username = document.getElementById("username").value.trim();
+        const password = document.getElementById("password").value.trim();
+
+        if (!username || !password) {
+            alert("Please enter both username and password");
+            return;
+        }
+
+        const res = await fetch(`${baseUrl}/auth/login`, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ username, password })
+        });
+
+        const data = await res.json();
+        if (res.ok && data.token) {
+            alert("Login successful!");
+            localStorage.setItem("authToken", data.token);
+            localStorage.setItem("username", username);
+            window.location.href = "dashboard.html";
+        } else {
+            alert("Invalid credentials or server error.");
+        }
+    }
+</script>
+</body>
+</html>

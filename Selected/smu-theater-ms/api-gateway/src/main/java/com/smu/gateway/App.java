@@ -10,9 +10,28 @@ import java.net.http.HttpResponse;
 
 public class App {
     public static void main(String[] args) {
+
+
+//        Javalin app = Javalin.create(cfg -> {
+//            cfg.http.defaultContentType = "application/json";
+//        }).start(8080);
+
         Javalin app = Javalin.create(cfg -> {
             cfg.http.defaultContentType = "application/json";
-        }).start(8080); // use 8081 if 8080 is busy
+
+            // ✅ Official supported CORS pattern for Javalin 5.6.x
+            cfg.plugins.enableCors(cors -> {
+                cors.add(it -> {
+                    it.anyHost(); // allow all origins
+                });
+            });
+        }).start(8080);
+
+
+
+
+
+
 
         app.get("/health", ctx -> ctx.result("{\"status\":\"ok\"}"));
 

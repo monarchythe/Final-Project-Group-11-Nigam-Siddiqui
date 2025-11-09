@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <title>Payment - SMU Theater</title>
+    <link rel="stylesheet" href="style.css" />
+    <style>
+        .summary-box {
+            background: #f9f9f9;
+            padding: 20px;
+            border-radius: 8px;
+            margin-top: 20px;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+        }
+        .summary-item {
+            margin: 8px 0;
+            font-size: 16px;
+        }
+        button {
+            margin-top: 20px;
+            padding: 10px 25px;
+            font-size: 16px;
+            background-color: #002d72;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <h2>💳 Payment</h2>
+
+    <div class="summary-box" id="summaryBox">
+        <div class="summary-item"><strong>Event:</strong> <span id="eventTitle">N/A</span></div>
+        <div class="summary-item"><strong>Seat:</strong> <span id="seatNumber">N/A</span></div>
+        <div class="summary-item"><strong>Amount:</strong> $<span id="amount">20.00</span></div>
+    </div>
+
+    <form id="paymentForm">
+        <label for="method">Payment Method:</label>
+        <select id="method" required>
+            <option value="credit_card">Credit Card</option>
+            <option value="debit_card">Debit Card</option>
+            <option value="upi">UPI</option>
+        </select>
+
+        <button type="submit">Pay Now</button>
+    </form>
+</div>
+
+<script>
+    const baseUrl = "http://localhost:8080";
+
+    document.addEventListener("DOMContentLoaded", () => {
+        const bookingId = localStorage.getItem("bookingId");
+        const eventId = localStorage.getItem("eventId");
+        const seat = localStorage.getItem("seat");
+        const username = localStorage.getItem("username");
+        const eventTitle = localStorage.getItem("eventTitle") || "SMU Educational Event";
+
+        if (!bookingId || !username) {
+            alert("No active booking found. Redirecting...");
+            window.location.href = "dashboard.html";
+            return;
+        }
+
+        // Show booking summary
+        document.getElementById("eventTitle").innerText = eventTitle;
+        document.getElementById("seatNumber").innerText = seat || "Not specified";
+        document.getElementById("amount").innerText = "20.00";
+
+        // Payment submission
+        document.getElementById("paymentForm").addEventListener("submit", async (e) => {
+            e.preventDefault();
+            const method = document.getElementById("method").value;
+
+            try {
+                const res = await fetch(`${baseUrl}/payment/pay`, {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({
+                        bookingId,
+                        amount: 20.0,
+                        method
+                    })
+                });
+
+                const data = await res.json();
+                if (res.ok) {
+                    alert(`✅ Payment successful!\nTransaction ID: ${data.transactionId}`);
+                    localStorage.clear();
+                    window.location.href = "dashboard.html";
+                } else {
+                    alert(`❌ Payment failed: ${data.error || "Unknown error"}`);
+                }
+            } catch (err) {
+                console.error(err);
+                alert("Payment service unavailable.");
+            }
+        });
+    });
+</script>
+</body>
+</html>
