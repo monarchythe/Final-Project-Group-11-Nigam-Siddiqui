@@ -199,48 +199,5 @@ curl -X POST http://localhost:8080/payment/pay   -H "Content-Type: application/j
 
 ---
 
-## 📸 Frontend Screenshots
-
-1. **Login / Register Page**  
-   ![Login](docs/screenshots/login.png)
-
-2. **Event Dashboard**  
-   ![Dashboard](docs/screenshots/dashboard.png)
-
-3. **Seat Selection Page**  
-   ![Seat Selection](docs/screenshots/seat.png)
-
-4. **Payment Page**  
-   ![Payment](docs/screenshots/payment.png)
-
-> *(You can add your actual screenshots to `frontend/docs/screenshots/` and update these image links.)*
-
----
-
-## 🧑‍💻 Contributors
-
-| Name | Role |
-|------|------|
-| Monarch Nigam | Backend Developer / Architect |
-| [Teammate Name] | Frontend Developer |
-| [Teammate Name] | QA / Tester |
-
----
-
-## 🏁 Future Enhancements
-- Integrate a database (MySQL/PostgreSQL) for persistent user & booking data  
-- Add logout & user session tracking  
-- Implement seat availability sync between users  
-- Deploy each service via Docker and Kubernetes  
-
----
-
-## 🏫 Course Info
-**Course:** Software Architecture  
-**Institution:** Southern Methodist University (SMU), Dallas, TX  
-**Semester:** Fall 2025  
-
----
-
 **© 2025 SMU Theater Microservices Project — Educational Use Only**
 
