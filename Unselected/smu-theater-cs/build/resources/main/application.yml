@@ -1,0 +1,7 @@
+server:
+  port: 8090   # keeps clear of your microservices gateway
+
+spring:
+  jackson:
+    serialization:
+      INDENT_OUTPUT: true

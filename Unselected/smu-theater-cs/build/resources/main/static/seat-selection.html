@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Seat Selection - SMU Theater</title>
+    <link rel="stylesheet" href="style.css" />
+    <style>
+        .seat-container {
+            display: grid;
+            grid-template-columns: repeat(5, 50px);
+            grid-gap: 10px;
+            justify-content: center;
+            margin-top: 20px;
+        }
+
+        .seat {
+            width: 50px;
+            height: 50px;
+            border-radius: 8px;
+            text-align: center;
+            line-height: 50px;
+            cursor: pointer;
+            font-weight: bold;
+            color: white;
+        }
+
+        .available { background-color: green; }
+        .booked { background-color: red; cursor: not-allowed; }
+        .selected { background-color: blue; }
+
+        .row-label {
+            text-align: center;
+            margin-top: 10px;
+            font-weight: bold;
+        }
+
+        button {
+            margin-top: 25px;
+            padding: 10px 20px;
+            font-size: 16px;
+            background-color: navy;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <h2>Seat Selection</h2>
+    <p id="eventInfo">Loading event...</p>
+
+    <div id="seatGrid"></div>
+    <button id="confirmBtn">Confirm Selection</button>
+</div>
+
+<script>
+    const baseUrl = "";
+    let selectedSeat = null;
+    const eventId = localStorage.getItem("eventId");
+    const username = localStorage.getItem("username");
+
+    document.addEventListener("DOMContentLoaded", async () => {
+        if (!eventId || !username) {
+            alert("No event selected or user not logged in.");
+            window.location.href = "dashboard.html";
+            return;
+        }
+
+        // Load event details
+        try {
+            const res = await fetch(`/events/${eventId}`);
+            const event = await res.json();
+
+            document.getElementById("eventInfo").innerText =
+                `${event.title} — ${event.dateTime}`;
+
+            localStorage.setItem("eventTitle", event.title);
+
+        } catch (err) {
+            document.getElementById("eventInfo").innerText = "Event details unavailable";
+        }
+
+        // Build A–E seat map
+        const rows = ["A", "B", "C", "D", "E"];
+        const seatGrid = document.getElementById("seatGrid");
+        seatGrid.innerHTML = "";
+
+        rows.forEach(row => {
+            const label = document.createElement("div");
+            label.classList.add("row-label");
+            label.innerText = row;
+            seatGrid.appendChild(label);
+
+            const rowDiv = document.createElement("div");
+            rowDiv.classList.add("seat-container");
+
+            for (let i = 1; i <= 5; i++) {
+                const seatId = `${row}${i}`;
+                const seat = document.createElement("div");
+                seat.classList.add("seat", "available");
+                seat.innerText = seatId;
+
+                seat.addEventListener("click", () => selectSeat(seat, seatId));
+                rowDiv.appendChild(seat);
+            }
+
+            seatGrid.appendChild(rowDiv);
+        });
+
+        document.getElementById("confirmBtn").addEventListener("click", confirmSeat);
+    });
+
+    function selectSeat(seatElement, seatNum) {
+        document.querySelectorAll(".seat").forEach(s => s.classList.remove("selected"));
+        seatElement.classList.add("selected");
+        selectedSeat = seatNum;
+    }
+
+    async function confirmSeat() {
+        if (!selectedSeat) {
+            alert("Please select a seat!");
+            return;
+        }
+
+        try {
+            const res = await fetch(`/booking/book`, {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({
+                    eventId,
+                    username,
+                    seat: selectedSeat
+                })
+            });
+
+            const data = await res.json();
+
+            if (res.ok) {
+                localStorage.setItem("bookingId", data.bookingId);
+                localStorage.setItem("seat", selectedSeat);
+                window.location.href = "payment.html";
+            } else {
+                alert("Booking failed.");
+            }
+        } catch (err) {
+            console.error(err);
+            alert("Booking service unavailable.");
+        }
+    }
+</script>
+</body>
+</html>
