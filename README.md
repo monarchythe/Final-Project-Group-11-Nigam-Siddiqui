@@ -45,9 +45,9 @@ Final-Project-Group-11-Nigam-Siddiqui/
 ├── LICENSE
 └── README.md           # This document
 
----
 
-2. Platforms, Tools, and Installation
+
+###2. Platforms, Tools, and Installation
 
 Both implementations use Java + Gradle, and were developed primarily in
 IntelliJ IDEA.
