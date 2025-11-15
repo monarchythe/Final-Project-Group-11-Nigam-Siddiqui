@@ -12,47 +12,12 @@ Both versions share the same user-facing functionality (login/register, event
 list, seat selection, payment), but differ in how responsibilities are split
 across components and how they communicate.
 
----
-
-## 1. Repository Structure
-
-```text
-Final-Project-Group-11-Nigam-Siddiqui/
-├── Selected/           # Selected architecture: Microservices + API Gateway
-│   └── smu-theater-ms/
-│       ├── api-gateway/
-│       ├── auth-service/
-│       ├── event-service/
-│       ├── booking-service/
-│       ├── payment-service/
-│       └── frontend/   # Static HTML/CSS/JS UI
-│
-├── Unselected/         # Unselected architecture: Client–Server monolith
-│   └── smu-theater-cs/
-│       ├── src/main/java/com/smu/cs/
-│       │   ├── auth/       # AuthController, User model
-│       │   ├── events/     # EventsController, Event model
-│       │   ├── booking/    # BookingController, Booking model
-│       │   ├── payment/    # PaymentController, Payment model
-│       │   └── models/     # Shared domain classes
-│       └── src/main/resources/static/
-│           ├── login.html
-│           ├── dashboard.html
-│           ├── seat-selection.html
-│           ├── payment.html
-│           └── style.css
-│
-├── LICENSE
-└── README.md           # This document
-
-
-
-###2. Platforms, Tools, and Installation
+## 2. Platforms, Tools, and Installation
 
 Both implementations use Java + Gradle, and were developed primarily in
 IntelliJ IDEA.
 
-2.1 Required Software
+### 2.1 Required Software
 
 JDK 17 (or compatible 17+)
 
@@ -115,7 +80,7 @@ Spring Boot app (with embedded UI): 8090
 
 Make sure these ports are free before running.
 
-3. How to Compile and Run – Selected Architecture (Microservices)
+## 3. How to Compile and Run – Selected Architecture (Microservices)
 
 Project path: Selected/smu-theater-ms
 
